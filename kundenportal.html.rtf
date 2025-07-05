@@ -1,0 +1,726 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 <!DOCTYPE html>\
+<html lang="de">\
+<head>\
+    <!-- Chosen Palette: Dynamic Growth (#073B4C, #118AB2, #06D6A0, #FFD166, #EF476F) -->\
+    <!-- Application Structure Plan: The application is designed as an interactive dashboard/playbook with a fixed sidebar for navigation and a main content area. This task-oriented structure allows sales agents to quickly access specific information (e.g., objection handling during a call) without linear scrolling. Key interactive elements like dynamic calculators and searchable lists provide direct utility, making it a practical tool for daily use. -->\
+    <!-- Visualization & Content Choices: \
+    - Dashboard KPIs (Goal: Inform): Big number cards (HTML/CSS) for immediate impact on key metrics.\
+    - Funding by Salary (Goal: Compare): Chart.js Bar Chart to clearly show the correlation between employee salary and potential funding.\
+    - Model Flow (Goal: Organize): Custom HTML/CSS diagram to explain the process visually, avoiding prohibited SVG/Mermaid. Hover interactions add detail without clutter.\
+    - Sales Strategy (Goal: Organize): Tabbed interface (HTML/JS) to segment the 3-phase plan into digestible parts.\
+    - Objection Handling (Goal: Inform/Organize): Searchable list (HTML/JS) for quick access to pre-scripted, effective responses.\
+    - Agency Revenue Projection (Goal: Change): Chart.js Line Chart to visualize cumulative revenue growth over time, providing a clear forecast.\
+    -->\
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->\
+    <meta charset="UTF-8">\
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">\
+    <title>Interaktives Handbuch: Das QCG-F\'f6rdermodell</title>\
+    <script src="https://cdn.tailwindcss.com"></script>\
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>\
+    <link rel="preconnect" href="https://fonts.googleapis.com">\
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">\
+    <style>\
+        :root \{\
+            --bg-main: #F7F9FA;\
+            --text-dark: #2D3748;\
+            --text-medium: #4A5568;\
+            --text-light: #718096;\
+            --accent-blue: #118AB2;\
+            --accent-green: #06D6A0;\
+            --accent-yellow: #FFD166;\
+            --accent-pink: #EF476F;\
+            --primary-dark: #073B4C;\
+        \}\
+        body \{\
+            font-family: 'Inter', sans-serif;\
+            background-color: var(--bg-main);\
+            color: var(--text-dark);\
+        \}\
+        .chart-container \{\
+            position: relative;\
+            width: 100%;\
+            max-width: 500px;\
+            margin-left: auto;\
+            margin-right: auto;\
+            height: 280px;\
+            max-height: 350px;\
+        \}\
+        .nav-link \{\
+            transition: all 0.2s ease-in-out;\
+        \}\
+        .nav-link.active \{\
+            background-color: var(--accent-blue);\
+            color: white;\
+            font-weight: 600;\
+        \}\
+        .nav-link:not(.active):hover \{\
+            background-color: #e2e8f0;\
+            color: var(--primary-dark);\
+        \}\
+        .content-section \{\
+            display: none;\
+        \}\
+        .content-section.active \{\
+            display: block;\
+        \}\
+        .gradient-text \{\
+            background: linear-gradient(45deg, var(--accent-blue), var(--accent-green));\
+            -webkit-background-clip: text;\
+            -webkit-text-fill-color: transparent;\
+        \}\
+    </style>\
+</head>\
+<body class="min-h-screen">\
+\
+    <div class="flex flex-col md:flex-row min-h-screen">\
+        <aside class="w-full md:w-64 bg-white border-r border-gray-200/50 p-6 flex-shrink-0">\
+            <h1 class="text-2xl font-bold text-var(--primary-dark) mb-8">QCG Playbook</h1>\
+            <nav id="navigation" class="flex flex-row md:flex-col gap-2">\
+                <a href="#dashboard" class="nav-link active flex items-center p-3 rounded-lg"><span class="mr-3 text-lg">\uc0\u55357 \u56522 </span>\'dcbersicht</a>\
+                <a href="#model" class="nav-link flex items-center p-3 rounded-lg"><span class="mr-3 text-lg">\uc0\u9881 \u65039 </span>Das Modell</a>\
+                <a href="#strategy" class="nav-link flex items-center p-3 rounded-lg"><span class="mr-3 text-lg">\uc0\u55356 \u57263 </span>Strategie</a>\
+                <a href="#objections" class="nav-link flex items-center p-3 rounded-lg"><span class="mr-3 text-lg">\uc0\u55357 \u56803 \u65039 </span>Einw\'e4nde</a>\
+                <a href="#requirements" class="nav-link flex items-center p-3 rounded-lg"><span class="mr-3 text-lg">\uc0\u55357 \u56523 </span>Voraussetzungen</a>\
+                <a href="#funding-calculator" class="nav-link flex items-center p-3 rounded-lg"><span class="mr-3 text-lg">\uc0\u55357 \u56496 </span>F\'f6rderrechner</a>\
+                <a href="#client-benefit-calculator" class="nav-link flex items-center p-3 rounded-lg"><span class="mr-3 text-lg">\uc0\u55357 \u56504 </span>Vorteilsrechner</a>\
+            </nav>\
+        </aside>\
+\
+        <main class="flex-1 p-6 md:p-10 overflow-y-auto">\
+            \
+            <section id="dashboard" class="content-section active">\
+                <h2 class="text-3xl font-bold mb-2">Dashboard: Der <span class="gradient-text">unfaire Vorteil</span> auf einen Blick</h2>\
+                <p class="text-var(--text-medium) mb-8">Hier finden Sie die wichtigsten Kennzahlen und ein interaktives Tool, um das Potenzial des QCG-Modells schnell zu erfassen und zu kommunizieren.</p>\
+                \
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">\
+                    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100">\
+                        <div class="text-sm font-semibold text-var(--text-medium)">Erfolgsquote der Antr\'e4ge</div>\
+                        <div class="text-5xl font-extrabold text-var(--accent-green) mt-2">75%</div>\
+                        <p class="text-xs text-var(--text-light) mt-1">Basierend auf \'fcber 200 eingereichten Antr\'e4gen.</p>\
+                    </div>\
+                    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100">\
+                        <div class="text-sm font-semibold text-var(--text-medium)">\'d8 F\'f6rderpotenzial</div>\
+                        <div class="text-5xl font-extrabold text-var(--accent-blue) mt-2">18.252\'80</div>\
+                        <p class="text-xs text-var(--text-light) mt-1">Bei 3.5k \'80 Gehalt / 6 Monate.</p>\
+                    </div>\
+                    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100">\
+                        <div class="text-sm font-semibold text-var(--text-medium)">Typ. Pr\'fcfzeit</div>\
+                        <div class="text-5xl font-extrabold text-var(--accent-yellow) mt-2">4-6</div>\
+                        <p class="text-xs text-var(--text-light) mt-1">Wochen bis zur Genehmigung.</p>\
+                    </div>\
+                </div>\
+\
+                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100">\
+                    <h3 class="font-semibold text-lg mb-4 text-center">F\'f6rderh\'f6he nach Mitarbeitergehalt</h3>\
+                    <p class="text-sm text-center text-var(--text-medium) mb-4">Visualisiert, wie das monatliche Bruttogehalt eines Mitarbeiters die gesamte 6-monatige F\'f6rdersumme direkt beeinflusst.</p>\
+                    <div class="chart-container">\
+                        <canvas id="fundingAmountChart"></canvas>\
+                    </div>\
+                </div>\
+            </section>\
+\
+            <section id="model" class="content-section">\
+                <h2 class="text-3xl font-bold mb-2">Das Modell im Detail: <span class="gradient-text">Von Kosten zu Chancen</span></h2>\
+                <p class="text-var(--text-medium) mb-8">Das QCG-F\'f6rdermodell ist ein Kreislauf, der durch die Integration einer zertifizierten Weiterbildung in Ihr Agenturangebot ausgel\'f6st wird. Dies macht Ihr Angebot f\'f6rderf\'e4hig und schafft einen Geldfluss, der Ihre Dienstleistung f\'fcr den Kunden refinanziert.</p>\
+\
+                 <div class="bg-white p-8 rounded-xl shadow-md border border-gray-100">\
+                     <h3 class="font-bold text-xl text-center text-var(--text-dark) mb-8">Der Win-Win-Win-Win Kreislauf</h3>\
+                     <div class="relative flex flex-col md:flex-row items-center justify-around space-y-8 md:space-y-0">\
+\
+                        <div class="flow-step text-center w-48" data-info-key="step1">\
+                            <div class="p-4 bg-blue-100 border-2 border-dashed border-var(--accent-blue) rounded-full w-28 h-28 flex items-center justify-center text-5xl mx-auto mb-3 transition-transform duration-200 hover:scale-110">\uc0\u55356 \u57314 </div>\
+                            <div class="font-bold">1. Agentur f\'fcr Arbeit</div>\
+                            <p class="text-sm text-var(--text-medium)">Genehmigt den Antrag und stellt die F\'f6rdermittel bereit.</p>\
+                        </div>\
+\
+                        <div class="text-4xl font-light text-gray-300 transform rotate-90 md:rotate-0">\uc0\u8594 </div>\
+\
+                        <div class="flow-step text-center w-48" data-info-key="step2">\
+                            <div class="p-4 bg-green-100 border-2 border-dashed border-var(--accent-green) rounded-full w-28 h-28 flex items-center justify-center text-5xl mx-auto mb-3 transition-transform duration-200 hover:scale-110">\uc0\u55357 \u56508 </div>\
+                            <div class="font-bold">2. Ihr Endkunde</div>\
+                            <p class="text-sm text-var(--text-medium)">Erh\'e4lt 75% der Lohnkosten f\'fcr den gef\'f6rderten Mitarbeiter.</p>\
+                        </div>\
+                        \
+                        <div class="text-4xl font-light text-gray-300 transform rotate-90 md:rotate-0">\uc0\u8594 </div>\
+                        \
+                        <div class="flow-step text-center w-48" data-info-key="step3">\
+                             <div class="p-4 bg-yellow-100 border-2 border-dashed border-var(--accent-yellow) rounded-full w-28 h-28 flex items-center justify-center text-5xl mx-auto mb-3 transition-transform duration-200 hover:scale-110">\uc0\u55357 \u56960 </div>\
+                            <div class="font-bold">3. Ihre Agentur</div>\
+                            <p class="text-sm text-var(--text-medium)">Wird mit den F\'f6rdermitteln f\'fcr die Dienstleistung bezahlt.</p>\
+                        </div>\
+                        \
+                         <div class="text-4xl font-light text-gray-300 transform rotate-90 md:rotate-0">\uc0\u8594 </div>\
+\
+                         <div class="flow-step text-center w-48" data-info-key="step4">\
+                             <div class="p-4 bg-pink-100 border-2 border-dashed border-var(--accent-pink) rounded-full w-28 h-28 flex items-center justify-center text-5xl mx-auto mb-3 transition-transform duration-200 hover:scale-110">\uc0\u55356 \u57235 </div>\
+                            <div class="font-bold">4. Bildungstr\'e4ger</div>\
+                            <p class="text-sm text-var(--text-medium)">F\'fchrt die Weiterbildung durch und wird daf\'fcr verg\'fctet.</p>\
+                        </div>\
+                    </div>\
+                    <div id="flow-info-box" class="mt-8 p-4 bg-gray-50 rounded-lg border border-gray-200 text-center text-var(--text-medium) min-h-[60px] flex items-center justify-center transition-opacity duration-300 opacity-0">\
+                        Bewegen Sie den Mauszeiger \'fcber einen Schritt, um mehr zu erfahren.\
+                    </div>\
+                 </div>\
+            </section>\
+            \
+            <section id="strategy" class="content-section">\
+                <h2 class="text-3xl font-bold mb-2">Strategie: <span class="gradient-text">Das Sell & Scale Konzept</span></h2>\
+                <p class="text-var(--text-medium) mb-8">Ein erprobter 3-Phasen-Plan, um das QCG-Modell effektiv zu nutzen, schnell erste Erfolge zu erzielen und es nachhaltig in Ihr Neukundengesch\'e4ft zu integrieren.</p>\
+\
+                <div class="bg-white rounded-xl shadow-md border border-gray-100">\
+                    <div class="flex border-b border-gray-200">\
+                        <button class="strategy-tab active flex-1 p-4 font-semibold text-center focus:outline-none transition-colors" data-target="phase1">Phase 1: Bestandskunden</button>\
+                        <button class="strategy-tab flex-1 p-4 font-semibold text-center focus:outline-none transition-colors text-var(--text-medium)" data-target="phase2">Phase 2: Karteileichen</button>\
+                        <button class="strategy-tab flex-1 p-4 font-semibold text-center focus:outline-none transition-colors text-var(--text-medium)" data-target="phase3">Phase 3: Neukunden</button>\
+                    </div>\
+                    <div class="p-8">\
+                        <div id="phase1" class="strategy-content active">\
+                            <h3 class="font-bold text-xl mb-3">Ziel: Schnelle Erfolge & Cashflow</h3>\
+                            <p class="text-var(--text-medium)">Sprechen Sie Kunden an, die kurz vor einer Vertragsverl\'e4ngerung stehen oder bei denen ein Upsell sinnvoll w\'e4re, aber am Budget scheitert. Die QCG-F\'f6rderung \'fcberwindet diese H\'fcrde und finanziert Ihre erweiterte Dienstleistung. Dies schafft sofortige Referenzen und beweist die Wirksamkeit des Modells.</p>\
+                             <div class="mt-4 p-4 bg-blue-50 rounded-lg text-sm">\
+                                <span class="font-bold">Praxis-Tipp:</span> Bieten Sie ein "All-Inclusive"-Paket an, das durch die F\'f6rderung f\'fcr den Kunden kostenlos wird. Das ist ein extrem starker Hebel f\'fcr Vertragsverl\'e4ngerungen.\
+                             </div>\
+                        </div>\
+                        <div id="phase2" class="strategy-content hidden">\
+                            <h3 class="font-bold text-xl mb-3">Ziel: Reaktivierung & Pipeline-F\'fcllung</h3>\
+                            <p class="text-var(--text-medium)">Gehen Sie Ihre CRM-Liste durch und kontaktieren Sie alle potenziellen Kunden, bei denen ein Deal in der Vergangenheit nicht zustande kam \'96 meistens aus Budgetgr\'fcnden. Das neue, "kostenlose" Angebot ist der perfekte Aufh\'e4nger, um diese Gespr\'e4che wieder aufzunehmen und die Deals doch noch abzuschlie\'dfen.</p>\
+                            <div class="mt-4 p-4 bg-blue-50 rounded-lg text-sm">\
+                                <span class="font-bold">Praxis-Tipp:</span> Starten Sie den Anruf mit: "Ich habe an unser Gespr\'e4ch von damals gedacht und habe eine M\'f6glichkeit gefunden, wie wir unser gesamtes Angebot f\'fcr Sie finanzieren k\'f6nnen, ohne dass es Ihr Budget belastet."\
+                             </div>\
+                        </div>\
+                        <div id="phase3" class="strategy-content hidden">\
+                           <h3 class="font-bold text-xl mb-3">Ziel: Skalierung & Marktdominanz</h3>\
+                            <p class="text-var(--text-medium)">Integrieren Sie das QCG-Modell als festen Bestandteil in Ihren Neukundenprozess. Nutzen Sie es als "Ass im \'c4rmel", wenn ein Kunde im Closing-Gespr\'e4ch aufgrund des Preises z\'f6gert. Alternativ k\'f6nnen Sie es proaktiv im Marketing einsetzen ("Wir finden Ihre Mitarbeiter und Sie zahlen keinen Cent"), um sehr g\'fcnstige Leads zu generieren und sich klar vom Wettbewerb abzuheben.</p>\
+                            <div class="mt-4 p-4 bg-blue-50 rounded-lg text-sm">\
+                                <span class="font-bold">Praxis-Tipp:</span> Positionieren Sie es nicht als Rabatt, sondern als eine strategische Finanzierungsoption, die Ihnen erm\'f6glicht, dem Kunden ein umfassenderes, werthaltigeres Paket anzubieten.\
+                             </div>\
+                        </div>\
+                    </div>\
+                </div>\
+            </section>\
+\
+            <section id="objections" class="content-section">\
+                <h2 class="text-3xl font-bold mb-2">Einw\'e4nde & <span class="gradient-text">Framing</span></h2>\
+                <p class="text-var(--text-medium) mb-8">Hier finden Sie die h\'e4ufigsten Kundeneinw\'e4nde und die passenden, erprobten Antworten. Nutzen Sie die Suche, um schnell die richtige Strategie zu finden.</p>\
+                <div class="bg-white p-8 rounded-xl shadow-md border border-gray-100">\
+                    <input type="search" id="objectionSearch" placeholder="Suchen Sie nach einem Einwand (z.B. Zeit, Risiko)..." class="w-full p-3 mb-6 border border-gray-300 rounded-md shadow-sm focus:ring-var(--accent-blue) focus:border-var(--accent-blue)">\
+                    <div id="objectionList" class="space-y-4"></div>\
+                </div>\
+            </section>\
+\
+            <section id="requirements" class="content-section">\
+                <h2 class="text-3xl font-bold mb-2">Voraussetzungen & <span class="gradient-text">Ihr Paket</span></h2>\
+                <p class="text-var(--text-medium) mb-8">Damit das Modell funktioniert, m\'fcssen bestimmte Kriterien erf\'fcllt sein. Hier finden Sie eine Checkliste f\'fcr den idealen F\'f6rderkandidaten und eine \'dcbersicht der Leistungen, die wir f\'fcr Sie erbringen.</p>\
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">\
+                    <div class="bg-white p-8 rounded-xl shadow-md border border-gray-100">\
+                        <h3 class="font-semibold text-lg mb-4">Ihr Rundum-Sorglos-Paket</h3>\
+                        <ul class="space-y-3">\
+                            <li class="flex items-start"><span class="text-var(--accent-green) mr-3 mt-1">\uc0\u10003 </span><span><b>Pers\'f6nlicher Partner Manager:</b> Ihr direkter Ansprechpartner f\'fcr alle strategischen Fragen.</span></li>\
+                            <li class="flex items-start"><span class="text-var(--accent-green) mr-3 mt-1">\uc0\u10003 </span><span><b>Verkaufsvorlagen & Skripte:</b> Erprobte Framings und Einwandbehandlungen.</span></li>\
+                            <li class="flex items-start"><span class="text-var(--accent-green) mr-3 mt-1">\uc0\u10003 </span><span><b>Komplette Antragsabwicklung:</b> Unser Backoffice \'fcbernimmt den gesamten b\'fcrokratischen Prozess.</span></li>\
+                            <li class="flex items-start"><span class="text-var(--accent-green) mr-3 mt-1">\uc0\u10003 </span><span><b>Garantievertr\'e4ge:</b> Juristisch gepr\'fcfte Vorlagen, die Sie und Ihre Kunden absichern.</span></li>\
+                            <li class="flex items-start"><span class="text-var(--accent-green) mr-3 mt-1">\uc0\u10003 </span><span><b>Exklusive Weiterbildungen:</b> Zugang zu zertifizierten Kursen (HR, Social Media, KI etc.).</span></li>\
+                        </ul>\
+                    </div>\
+                    <div class="bg-white p-8 rounded-xl shadow-md border border-gray-100">\
+                        <h3 class="font-semibold text-lg mb-4">Checkliste: Der ideale F\'f6rderkandidat</h3>\
+                        <ul class="space-y-3">\
+                            <li class="flex items-start"><span class="text-var(--accent-blue) mr-3 mt-1">\uc0\u55356 \u57218 </span><span><b>Alter:</b> Der Mitarbeiter muss \'fcber 25 Jahre alt sein.</span></li>\
+                            <li class="flex items-start"><span class="text-var(--accent-blue) mr-3 mt-1">\uc0\u55357 \u56540 </span><span><b>F\'f6rderhistorie:</b> In den letzten 2 Jahren darf keine F\'f6rderung durch die Agentur f\'fcr Arbeit stattgefunden haben.</span></li>\
+                            <li class="flex items-start"><span class="text-var(--accent-blue) mr-3 mt-1">\uc0\u55356 \u56809 \u55356 \u56810 </span><span><b>Sprachniveau:</b> Mindestens Deutsch-Niveau B1, idealerweise B2 oder h\'f6her.</span></li>\
+                            <li class="flex items-start"><span class="text-var(--accent-blue) mr-3 mt-1">\uc0\u55357 \u56741 \u65039 </span><span><b>Rolle:</b> Ideal sind Mitarbeiter aus dem Backoffice, Service oder Innendienst. Vertriebler mit Provision sind schwierig.</span></li>\
+                             <li class="flex items-start"><span class="text-var(--accent-blue) mr-3 mt-1">\uc0\u55357 \u56508 </span><span><b>Anstellung:</b> Der Mitarbeiter kann auch neu angestellt werden, eine bestehende Anstellung ist jedoch einfacher.</span></li>\
+                        </ul>\
+                    </div>\
+                </div>\
+            </section>\
+\
+            <section id="funding-calculator" class="content-section">\
+                <h2 class="text-3xl font-bold mb-2">F\'f6rderrechner: <span class="gradient-text">Ihr Umsatzpotenzial</span> (Agentur)</h2>\
+                <p class="text-var(--text-medium) mb-8">Projizieren Sie Ihren Umsatz. Das Tool ber\'fccksichtigt einen "Sofort-Start" mit Bestandskunden im ersten Monat und eine konstante Neukundengewinnung danach. Eine durchschnittliche Pr\'fcf- und Genehmigungszeit von 6 Wochen (1,5 Monaten) bis zum Umsatz-Eingang ist einkalkuliert.</p>\
+\
+                <div class="bg-white p-8 rounded-xl shadow-md border border-gray-100">\
+                    <h3 class="font-semibold text-lg mb-4">Eingaben</h3>\
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">\
+                        <div>\
+                            <label for="calcAgencyOfferTotalValue" class="block text-sm font-medium text-var(--text-medium)">Gesamtwert Agenturangebot (\'80)</label>\
+                            <input type="number" id="calcAgencyOfferTotalValue" value="12000" class="mt-1 w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-var(--accent-blue) focus:border-var(--accent-blue)">\
+                        </div>\
+                        <div>\
+                            <label for="calcInitialExistingClients" class="block text-sm font-medium text-var(--text-medium)">Bestandskunden (Monat 1)</label>\
+                            <input type="number" id="calcInitialExistingClients" value="3" class="mt-1 w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-var(--accent-blue) focus:border-var(--accent-blue)">\
+                        </div>\
+                         <div>\
+                            <label for="calcInitialCRMLeads" class="block text-sm font-medium text-var(--text-medium)">Karteileichen (Monat 1)</label>\
+                            <input type="number" id="calcInitialCRMLeads" value="2" class="mt-1 w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-var(--accent-blue) focus:border-var(--accent-blue)">\
+                        </div>\
+                         <div>\
+                            <label for="calcInitialOpenOffers" class="block text-sm font-medium text-var(--text-medium)">Offene Angebote (Monat 1)</label>\
+                            <input type="number" id="calcInitialOpenOffers" value="1" class="mt-1 w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-var(--accent-blue) focus:border-var(--accent-blue)">\
+                        </div>\
+                        <div class="lg:col-span-2">\
+                            <label for="calcMonthlyNewClientsTarget" class="block text-sm font-medium text-var(--text-medium)">Neue Kunden pro Monat (ab Monat 2)</label>\
+                            <input type="number" id="calcMonthlyNewClientsTarget" value="2" class="mt-1 w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-var(--accent-blue) focus:border-var(--accent-blue)">\
+                        </div>\
+                    </div>\
+\
+                    <h3 class="font-semibold text-lg mb-4">Umsatzprojektion Agentur (6 Monate)</h3>\
+                    <div class="overflow-x-auto mb-8">\
+                        <table class="min-w-full bg-white border border-gray-200 rounded-md shadow-sm">\
+                            <thead>\
+                                <tr class="bg-gray-100 border-b">\
+                                    <th class="py-2 px-4 text-left text-sm font-semibold text-var(--text-dark)">Monat</th>\
+                                    <th class="py-2 px-4 text-left text-sm font-semibold text-var(--text-dark)">Erfolgr. Kunden (Neu)</th>\
+                                    <th class="py-2 px-4 text-left text-sm font-semibold text-var(--text-dark)">Realisierter Umsatz (Monat)</th>\
+                                    <th class="py-2 px-4 text-left text-sm font-semibold text-var(--text-dark)">Kumulierte Kunden</th>\
+                                    <th class="py-2 px-4 text-left text-sm font-semibold text-var(--text-dark)">Kumulierter Umsatz</th>\
+                                </tr>\
+                            </thead>\
+                            <tbody id="agencyMonthlyProjectionTable"></tbody>\
+                        </table>\
+                    </div>\
+                    <h3 class="font-semibold text-lg mb-4">Kumulierte Umsatzentwicklung</h3>\
+                    <div class="chart-container h-64 md:h-80">\
+                        <canvas id="agencyRevenueChart"></canvas>\
+                    </div>\
+                </div>\
+            </section>\
+\
+            <section id="client-benefit-calculator" class="content-section">\
+                <h2 class="text-3xl font-bold mb-2">Vorteilsrechner: <span class="gradient-text">Was Ihr Kunde spart</span></h2>\
+                <p class="text-var(--text-medium) mb-8">Nutzen Sie dieses Tool im Verkaufsgespr\'e4ch, um Ihren Kunden den finanziellen Vorteil schwarz auf wei\'df zu zeigen. Es verdeutlicht die enorme Ersparnis und macht Ihr Angebot unwiderstehlich.</p>\
+\
+                <div class="bg-white p-8 rounded-xl shadow-md border border-gray-100">\
+                    <h3 class="font-semibold text-lg mb-4">Eingaben</h3>\
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">\
+                        <div>\
+                            <label for="ekEmployeeGrossSalary" class="block text-sm font-medium text-var(--text-medium)">Bruttogehalt Mitarbeiter (\'80)</label>\
+                            <input type="number" id="ekEmployeeGrossSalary" value="3500" class="mt-1 w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-var(--accent-blue) focus:border-var(--accent-blue)">\
+                        </div>\
+                        <div>\
+                            <label for="ekTotalAgencyOfferValue" class="block text-sm font-medium text-var(--text-medium)">Gesamtwert Agenturangebot (6 Monate, \'80)</label>\
+                            <input type="number" id="ekTotalAgencyOfferValue" value="12000" class="mt-1 w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-var(--accent-blue) focus:border-var(--accent-blue)">\
+                        </div>\
+                    </div>\
+\
+                    <h3 class="font-semibold text-lg mb-4">Ergebnisse f\'fcr den Endkunden</h3>\
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">\
+                        <div class="bg-green-50 p-6 rounded-lg text-center">\
+                            <div class="text-sm text-green-800">Gesamtf\'f6rderung (6 Monate)</div>\
+                            <div id="ekTotalFundingResult" class="text-3xl font-bold text-var(--accent-green) mt-1"></div>\
+                        </div>\
+                        <div class="bg-pink-50 p-6 rounded-lg text-center">\
+                            <div class="text-sm text-pink-800">Effektive Kosten f\'fcr den Kunden</div>\
+                            <div id="ekNetEffectiveCostResult" class="text-3xl font-bold text-var(--accent-pink) mt-1"></div>\
+                        </div>\
+                        <div class="bg-blue-50 p-6 rounded-lg md:col-span-2 text-center">\
+                            <div class="text-sm text-blue-800">Ersparnis durch F\'f6rderung</div>\
+                            <div id="ekSavingsPercentageResult" class="text-3xl font-bold text-var(--accent-blue) mt-1"></div>\
+                        </div>\
+                    </div>\
+                </div>\
+            </section>\
+\
+        </main>\
+    </div>\
+\
+<script>\
+document.addEventListener('DOMContentLoaded', () => \{\
+\
+    const appData = \{\
+        flowInfo: \{\
+            step1: "Die Agentur f\'fcr Arbeit pr\'fcft den Antrag und stellt bei Genehmigung die F\'f6rdermittel bereit. Unser Backoffice k\'fcmmert sich um die gesamte Kommunikation und den Papierkram.",\
+            step2: "Der Endkunde Ihres Kunden erh\'e4lt eine Lohnkostenerstattung von 75% f\'fcr den teilnehmenden Mitarbeiter \'fcber einen Zeitraum von sechs Monaten. Das schafft erhebliche liquide Mittel.",\
+            step3: "Mit dieser neu geschaffenen Liquidit\'e4t bezahlt der Endkunde Ihre Agenturdienstleistung. Ihr Angebot wird somit f\'fcr ihn quasi kostenneutral.",\
+            step4: "Ein Teil der F\'f6rderung deckt die Kosten der Weiterbildung ab. Der zertifizierte Bildungstr\'e4ger f\'fchrt den Kurs durch und wird daf\'fcr verg\'fctet.",\
+        \},\
+        objections: [\
+            \{\
+                keyword: "risiko ablehnung f\'f6rderung",\
+                title: "Was passiert, wenn die F\'f6rderung nicht genehmigt wird?",\
+                content: `<b>Das Framing: Sicherheit & Entlastung</b><br><br> "Eine absolut berechtigte Frage, die uns zeigt, dass Sie vorausschauend planen. Genau f\'fcr diesen Fall haben wir vorgesorgt: Wir arbeiten mit einem Garantievertrag. Das bedeutet f\'fcr Sie: Das Angebot wird nur dann g\'fcltig, wenn die F\'f6rderung auch wirklich flie\'dft. Sollte der Antrag wider Erwarten abgelehnt werden, entsteht f\'fcr Sie keinerlei Verpflichtung. Sie haben also null Risiko, aber die volle Chance auf eine erhebliche finanzielle Entlastung. Bedenken Sie: Unsere Erfolgsquote liegt bei \'fcber 70%, die Wahrscheinlichkeit f\'fcr einen Erfolg ist also sehr hoch."`\
+            \},\
+            \{\
+                keyword: "zeitaufwand mitarbeiter schulung",\
+                title: "Mein Mitarbeiter hat keine Zeit f\'fcr eine 6-monatige Schulung.",\
+                content: `<b>Das Framing: Clevere & Flexible L\'f6sung</b><br><br> "Ich verstehe vollkommen, dass im Tagesgesch\'e4ft jede Arbeitsstunde z\'e4hlt. Die gute Nachricht ist: Die Weiterbildung ist als flexible Online-Ma\'dfnahme konzipiert. Die formalen Anwesenheitspflichten werden erf\'fcllt, ohne den Betriebsablauf zu st\'f6ren. In der Praxis bedeutet das f\'fcr viele unserer Partner, dass der Mitarbeiter weiterhin seinen Aufgaben nachgehen kann. Sehen Sie es als eine smarte Optimierung: Sie erf\'fcllen die formalen Anforderungen f\'fcr die F\'f6rderung und sichern sich die finanzielle Freiheit, w\'e4hrend Ihr Betrieb ungest\'f6rt weiterl\'e4uft."`\
+            \},\
+            \{\
+                keyword: "seriosit\'e4t betrug f\'f6rdermittelbetrug",\
+                title: "Ist das \'fcberhaupt seri\'f6s? Das klingt nach F\'f6rdermittelbetrug.",\
+                content: `<b>Das Framing: Win-Win-Win & Staatlicher Wille</b><br><br> "Ein wichtiger Punkt. Lassen Sie mich das klarstellen: Dieses Modell ist 100% legal und basiert auf dem Qualifizierungschancengesetz des Staates. Der Staat hat dieses Gesetz geschaffen, weil er ein riesiges Interesse daran hat, Mitarbeiter weiterzubilden, um Arbeitspl\'e4tze f\'fcr die digitale Zukunft zu sichern. Wir nutzen diesen Mechanismus auf eine clevere Weise, die allen zugutekommt: Der Staat erreicht sein Ziel, Ihr Kunde bekommt qualifizierte Mitarbeiter, Ihre Agentur kann wertvolle Dienstleistungen erbringen und der Mitarbeiter selbst profitiert von einer kostenlosen Weiterbildung. Wir nennen das 'steuereffiziente Geld-Zur\'fcckbeschaffung' \'96 alles im Rahmen der gesetzlichen M\'f6glichkeiten."`\
+            \},\
+            \{\
+                keyword: "falsche kunden undankbar",\
+                title: "Ziehe ich damit nicht nur 'Schn\'e4ppchenj\'e4ger' an?",\
+                content: `<b>Das Framing: Strategisches Werkzeug</b><br><br> "Das ist eine kluge strategische \'dcberlegung. Deshalb empfehlen wir, die F\'f6rderung nicht als pauschalen Rabatt zu bewerben, sondern als Ihr 'Ass im \'c4rmel'. Sie setzen es gezielt dann ein, wenn Sie einen qualifizierten Kunden vor sich haben, bei dem das Budget die letzte H\'fcrde ist. So stellen Sie sicher, dass Sie weiterhin mit wertsch\'e4tzenden Kunden arbeiten, denen Sie aber eine unschlagbare L\'f6sung f\'fcr deren Finanzierungsproblem bieten k\'f6nnen. Es ist ein Werkzeug, um gute Kunden zu gewinnen, nicht um undankbare anzuziehen."`\
+            \},\
+            \{\
+                keyword: "k\'fcndigung mitarbeiter",\
+                title: "Was, wenn der Mitarbeiter w\'e4hrend oder nach der Ma\'dfnahme k\'fcndigt?",\
+                content: `<b>Das Framing: Absicherung & Bindung</b><br><br> "Auch daran haben wir gedacht. F\'fcr den Fall einer K\'fcndigung *w\'e4hrend* der Ma\'dfnahme stellen wir Ihnen Mustervertr\'e4ge zur Verf\'fcgung. Diese sichern Sie als Unternehmer ab, indem der Mitarbeiter sich verpflichtet, bei einer K\'fcndigung die Kosten zu \'fcbernehmen oder f\'fcr eine gewisse Zeit im Unternehmen zu bleiben. Das schafft eine starke Bindung. Wenn der Mitarbeiter *nach* der erfolgreich abgeschlossenen Weiterbildung geht, entstehen f\'fcr Sie keinerlei Probleme oder R\'fcckzahlungspflichten. Die F\'f6rderung ist dann bereits abgeschlossen."`\
+            \}\
+        ]\
+    \};\
+\
+    // --- Element Retrievals ---\
+    // Navigation\
+    const navigation = document.getElementById('navigation');\
+    const navLinks = navigation ? navigation.querySelectorAll('.nav-link') : [];\
+    const contentSections = document.querySelectorAll('.content-section');\
+\
+    // Dashboard / ROI Calculator\
+    const ticketSizeInput = document.getElementById('ticketSize');\
+    const applicationCountInput = document.getElementById('applicationCount');\
+    const roiResultElement = document.getElementById('roiResult');\
+\
+    // Flow Info\
+    const flowSteps = document.querySelectorAll('.flow-step');\
+    const infoBox = document.getElementById('flow-info-box');\
+\
+    // Strategy Tabs\
+    const strategyTabs = document.querySelectorAll('.strategy-tab');\
+    const strategyContents = document.querySelectorAll('.strategy-content');\
+\
+    // Objection Handler\
+    const objectionList = document.getElementById('objectionList');\
+    const objectionSearch = document.getElementById('objectionSearch');\
+\
+    // Funding Amount Chart\
+    const fundingAmountCtx = document.getElementById('fundingAmountChart'); \
+\
+    // Agency Funding Calculator\
+    const calcAgencyOfferTotalValue = document.getElementById('calcAgencyOfferTotalValue');\
+    const calcInitialExistingClients = document.getElementById('calcInitialExistingClients');\
+    const calcInitialCRMLeads = document.getElementById('calcInitialCRMLeads');\
+    const calcInitialOpenOffers = document.getElementById('calcInitialOpenOffers');\
+    const calcMonthlyNewClientsTarget = document.getElementById('calcMonthlyNewClientsTarget');\
+    const agencyMonthlyProjectionTable = document.getElementById('agencyMonthlyProjectionTable');\
+    const agencyRevenueChartCanvas = document.getElementById('agencyRevenueChart'); \
+\
+    // Client Benefit Calculator\
+    const ekEmployeeGrossSalary = document.getElementById('ekEmployeeGrossSalary');\
+    const ekTotalAgencyOfferValue = document.getElementById('ekTotalAgencyOfferValue');\
+    const ekTotalFundingResult = document.getElementById('ekTotalFundingResult');\
+    const ekNetEffectiveCostResult = document.getElementById('ekNetEffectiveCostResult');\
+    const ekSavingsPercentageResult = document.getElementById('ekSavingsPercentageResult');\
+\
+    // --- Chart Instances ---\
+    let agencyRevenueChartInstance = null;\
+\
+    // --- Utility Functions ---\
+    const wrapLabel = (str, maxWidth) => \{\
+        if (str.length <= maxWidth) return str;\
+        const words = str.split(' ');\
+        let lines = [];\
+        let currentLine = words[0];\
+        for (let i = 1; i < words.length; i++) \{\
+            if ((currentLine + ' ' + words[i]).length > maxWidth) \{\
+                lines.push(currentLine);\
+                currentLine = words[i];\
+            \} else \{\
+                currentLine += ' ' + words[i];\
+            \}\
+        \}\
+        lines.push(currentLine);\
+        return lines;\
+    \};\
+\
+    const sharedTooltipTitleCallback = (tooltipItems) => \{\
+        const item = tooltipItems[0];\
+        let label = item.chart.data.labels[item.dataIndex];\
+        return Array.isArray(label) ? label.join(' ') : label;\
+    \};\
+    \
+    const sharedChartOptions = \{\
+        responsive: true,\
+        maintainAspectRatio: false,\
+        plugins: \{\
+            legend: \{ display: false \},\
+            tooltip: \{\
+                enabled: true,\
+                backgroundColor: 'var(--text-dark)',\
+                titleFont: \{ size: 14, weight: 'bold', family: 'Inter' \},\
+                bodyFont: \{ size: 12, family: 'Inter' \},\
+                padding: 10,\
+                cornerRadius: 6,\
+                callbacks: \{ title: sharedTooltipTitleCallback \}\
+            \}\
+        \}\
+    \};\
+\
+    // --- Core Logic Functions ---\
+    const calculateROI = () => \{\
+        const ticketSize = parseFloat(ticketSizeInput.value) || 0;\
+        const applicationCount = parseInt(applicationCountInput.value) || 0;\
+        const successRate = 0.75;\
+\
+        const successfulApplications = Math.round(applicationCount * successRate);\
+        const roi = successfulApplications * ticketSize;\
+\
+        roiResultElement.textContent = `\'80 $\{roi.toLocaleString('de-DE')\}`;\
+    \};\
+\
+    const calculateAgencyFundingAndRevenue = () => \{\
+        const agencyOfferTotalValue = parseFloat(calcAgencyOfferTotalValue.value) || 0;\
+        const initialExistingClients = parseInt(calcInitialExistingClients.value) || 0;\
+        const initialCRMLeads = parseInt(calcInitialCRMLeads.value) || 0;\
+        const initialOpenOffers = parseInt(calcInitialOpenOffers.value) || 0;\
+        const monthlyNewClientsTarget = parseInt(calcMonthlyNewClientsTarget.value) || 0;\
+        \
+        const applicationSuccessRate = 0.75;\
+        const approvalDelayMonths = 1.5;\
+\
+        agencyMonthlyProjectionTable.innerHTML = '';\
+        let cumulativeClients = 0;\
+        let cumulativeRevenue = 0;\
+        const monthlyRevenueChartData = [];\
+        const monthlyLabels = [];\
+        let clientsPendingApproval = [];\
+\
+        for (let month = 1; month <= 6; month++) \{\
+            let clientsClosedThisMonthRaw = 0;\
+            if (month === 1) \{\
+                clientsClosedThisMonthRaw = initialExistingClients + initialCRMLeads + initialOpenOffers;\
+            \} else \{\
+                clientsClosedThisMonthRaw = monthlyNewClientsTarget;\
+            \}\
+            \
+            const successfulClientsThisMonth = clientsClosedThisMonthRaw * applicationSuccessRate;\
+            \
+            if(successfulClientsThisMonth > 0) \{\
+                 clientsPendingApproval.push(\{ count: successfulClientsThisMonth, approvalMonth: month + approvalDelayMonths \});\
+            \}\
+\
+            let revenueRecognizedInThisMonth = 0;\
+            clientsPendingApproval = clientsPendingApproval.filter(cohort => \{\
+                if (month >= cohort.approvalMonth) \{\
+                    revenueRecognizedInThisMonth += cohort.count * agencyOfferTotalValue;\
+                    return false;\
+                \}\
+                return true;\
+            \});\
+\
+            cumulativeClients += successfulClientsThisMonth;\
+            cumulativeRevenue += revenueRecognizedInThisMonth;\
+\
+            monthlyLabels.push(`Monat $\{month\}`);\
+            monthlyRevenueChartData.push(cumulativeRevenue);\
+\
+            const row = agencyMonthlyProjectionTable.insertRow();\
+            row.className = 'border-b border-gray-100';\
+            row.innerHTML = `\
+                <td class="py-2 px-4">$\{month\}</td>\
+                <td class="py-2 px-4">$\{Math.round(successfulClientsThisMonth)\}</td>\
+                <td class="py-2 px-4">\'80 $\{revenueRecognizedInThisMonth.toLocaleString('de-DE', \{ minimumFractionDigits: 2, maximumFractionDigits: 2 \})\}</td>\
+                <td class="py-2 px-4 font-bold">$\{Math.round(cumulativeClients)\}</td>\
+                <td class="py-2 px-4 font-bold">\'80 $\{cumulativeRevenue.toLocaleString('de-DE', \{ minimumFractionDigits: 2, maximumFractionDigits: 2 \})\}</td>\
+            `;\
+        \}\
+\
+        if (agencyRevenueChartCanvas) \{\
+            const agencyRevenueCtx = agencyRevenueChartCanvas.getContext('2d');\
+            if (agencyRevenueChartInstance) \{\
+                agencyRevenueChartInstance.data.labels = monthlyLabels;\
+                agencyRevenueChartInstance.data.datasets[0].data = monthlyRevenueChartData;\
+                agencyRevenueChartInstance.update();\
+            \} else \{\
+                agencyRevenueChartInstance = new Chart(agencyRevenueCtx, \{\
+                    type: 'line',\
+                    data: \{\
+                        labels: monthlyLabels,\
+                        datasets: [\{\
+                            label: 'Kumulierter Umsatz Agentur',\
+                            data: monthlyRevenueChartData,\
+                            borderColor: 'var(--accent-blue)',\
+                            backgroundColor: 'rgba(17, 138, 178, 0.1)',\
+                            fill: true,\
+                            tension: 0.3,\
+                            pointBackgroundColor: 'var(--accent-blue)',\
+                            pointBorderColor: 'white',\
+                            pointBorderWidth: 2,\
+                            pointRadius: 5,\
+                            pointHoverRadius: 7\
+                        \}]\
+                    \},\
+                    options: \{\
+                        ...sharedChartOptions,\
+                        plugins: \{ ...sharedChartOptions.plugins, legend: \{ display: true, position: 'top' \} \},\
+                        scales: \{\
+                            y: \{\
+                                beginAtZero: true,\
+                                ticks: \{ callback: (value) => `\'80$\{value / 1000\}k` \},\
+                                title: \{ display: true, text: 'Kumulierter Umsatz (\'80)' \}\
+                            \},\
+                            x: \{ title: \{ display: true, text: 'Monat' \} \}\
+                        \}\
+                    \}\
+                \});\
+            \}\
+        \}\
+    \};\
+\
+    const calculateClientBenefits = () => \{\
+        const employeeGrossSalary = parseFloat(ekEmployeeGrossSalary.value) || 0;\
+        const totalAgencyOfferValue = parseFloat(ekTotalAgencyOfferValue.value) || 0;\
+\
+        const ancillaryWageCostFactor = 1.28;\
+        const fundingDurationMonths = 6;\
+        const fundingRate = 0.75;\
+\
+        const totalEmployeeCostForFunding = employeeGrossSalary * ancillaryWageCostFactor;\
+        const totalFundingReceived = totalEmployeeCostForFunding * fundingDurationMonths * fundingRate;\
+        \
+        ekTotalFundingResult.textContent = `\'80 $\{totalFundingReceived.toLocaleString('de-DE', \{ minimumFractionDigits: 2, maximumFractionDigits: 2 \})\}`;\
+\
+        const netEffectiveCost = totalAgencyOfferValue - totalFundingReceived;\
+        ekNetEffectiveCostResult.textContent = `\'80 $\{netEffectiveCost.toLocaleString('de-DE', \{ minimumFractionDigits: 2, maximumFractionDigits: 2 \})\}`;\
+\
+        const savingsPercentage = totalAgencyOfferValue > 0 ? (totalFundingReceived / totalAgencyOfferValue) * 100 : 0;\
+        ekSavingsPercentageResult.textContent = `$\{savingsPercentage.toFixed(1)\} %`;\
+    \};\
+\
+    const renderObjections = (filter = '') => \{\
+        objectionList.innerHTML = '';\
+        const filteredObjections = appData.objections.filter(o => \
+            o.title.toLowerCase().includes(filter.toLowerCase()) || \
+            o.keyword.toLowerCase().includes(filter.toLowerCase())\
+        );\
+\
+        if (filteredObjections.length === 0) \{\
+            objectionList.innerHTML = `<p class="text-var(--text-medium) text-center">Keine passenden Einw\'e4nde gefunden.</p>`;\
+            return;\
+        \}\
+\
+        filteredObjections.forEach(obj => \{\
+            const element = document.createElement('div');\
+            element.className = 'border-b border-gray-200/80 pb-4';\
+            element.innerHTML = `\
+                <h4 class="font-semibold text-lg text-var(--text-dark)">$\{obj.title\}</h4>\
+                <div class="text-var(--text-medium) text-sm mt-2">$\{obj.content\}</div>\
+            `;\
+            objectionList.appendChild(element);\
+        \});\
+    \};\
+\
+    // --- Event Listeners and Initial Calls ---\
+    // Navigation\
+    if (navigation) \{\
+        navLinks.forEach(link => \{\
+            link.addEventListener('click', (e) => \{\
+                const targetId = link.getAttribute('href').substring(1);\
+                contentSections.forEach(section => \{\
+                    section.classList.toggle('active', section.id === targetId);\
+                \});\
+                navLinks.forEach(l => l.classList.remove('active'));\
+                link.classList.add('active');\
+                e.preventDefault();\
+            \});\
+        \});\
+    \}\
+\
+    // Dashboard / ROI Calculator\
+    if (ticketSizeInput && applicationCountInput && roiResultElement) \{\
+        ticketSizeInput.addEventListener('input', calculateROI);\
+        applicationCountInput.addEventListener('input', calculateROI);\
+        calculateROI();\
+    \}\
+\
+    // Flow Info\
+    if (infoBox) \{\
+        flowSteps.forEach(step => \{\
+            step.addEventListener('mouseenter', () => \{\
+                const key = step.dataset.infoKey;\
+                infoBox.textContent = appData.flowInfo[key];\
+                infoBox.classList.remove('opacity-0');\
+            \});\
+            step.addEventListener('mouseleave', () => \{\
+                 infoBox.classList.add('opacity-0');\
+            \});\
+        \});\
+    \}\
+    \
+    // Strategy Tabs\
+    strategyTabs.forEach(tab => \{\
+        tab.addEventListener('click', () => \{\
+            strategyTabs.forEach(t => t.classList.remove('active', 'text-var(--text-dark)') & t.classList.add('text-var(--text-medium)'));\
+            tab.classList.add('active', 'text-var(--text-dark)');\
+            tab.classList.remove('text-var(--text-medium)');\
+\
+            const targetId = tab.dataset.target;\
+            strategyContents.forEach(content => \{\
+                content.classList.toggle('hidden', content.id !== targetId);\
+                content.classList.toggle('active', content.id === targetId);\
+            \});\
+        \});\
+    \});\
+\
+    // Objection Handler\
+    if (objectionSearch) \{\
+        objectionSearch.addEventListener('input', (e) => \{\
+            renderObjections(e.target.value);\
+        \});\
+        renderObjections();\
+    \}\
+\
+    // Funding Amount Chart (Initialization)\
+    if (fundingAmountCtx) \{\
+        new Chart(fundingAmountCtx.getContext('2d'), \{\
+            type: 'bar',\
+            data: \{\
+                labels: [\
+                    wrapLabel('3.000\'80 Brutto', 16), \
+                    wrapLabel('3.500\'80 Brutto', 16), \
+                    wrapLabel('4.000\'80 Brutto', 16)\
+                ],\
+                datasets: [\{\
+                    label: 'Gesamtf\'f6rderung (6 Monate)',\
+                    data: [17280, 20160, 23040], // Corrected values based on 3000/3500/4000 * 1.28 * 6 * 0.75\
+                    backgroundColor: ['#118AB2', '#06D6A0', '#FFD166'],\
+                    borderWidth: 0,\
+                    borderRadius: 6\
+                \}]\
+            \},\
+            options: \{\
+                ...sharedChartOptions,\
+                scales: \{\
+                    y: \{\
+                        beginAtZero: true,\
+                        ticks: \{\
+                            callback: (value) => `\'80$\{value / 1000\}k`\
+                        \}\
+                    \}\
+                \}\
+            \}\
+        \});\
+    \}\
+\
+    // Agency Funding Calculator\
+    const agencyCalcInputs = [\
+        calcAgencyOfferTotalValue, calcInitialExistingClients, calcInitialCRMLeads,\
+        calcInitialOpenOffers, calcMonthlyNewClientsTarget\
+    ];\
+    if (agencyCalcInputs.every(el => el) && agencyMonthlyProjectionTable && agencyRevenueChartCanvas) \{\
+        agencyCalcInputs.forEach(input => input.addEventListener('input', calculateAgencyFundingAndRevenue));\
+        calculateAgencyFundingAndRevenue();\
+    \}\
+\
+    // Client Benefit Calculator\
+    const clientCalcInputs = [ekEmployeeGrossSalary, ekTotalAgencyOfferValue];\
+    if (clientCalcInputs.every(el => el) && ekTotalFundingResult && ekNetEffectiveCostResult && ekSavingsPercentageResult) \{\
+        clientCalcInputs.forEach(input => input.addEventListener('input', calculateClientBenefits));\
+        calculateClientBenefits();\
+    \}\
+\});\
+</script>\
+</body>\
+</html>\
+}
