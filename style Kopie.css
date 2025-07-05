@@ -1,0 +1,164 @@
+/* Base styles and variables defined directly in Tailwind config in index.html */
+/* Custom classes for specific elements */
+
+body {
+    /* Font family and background/text colors are now set via Tailwind classes on body */
+    line-height: 1.6;
+}
+
+h1, h2, h3, h4 {
+    /* Font family and weight are now set via Tailwind classes or base font in config */
+}
+
+p, li, label, input, textarea, select, table {
+    /* Font family and line-height are now set via Tailwind classes or base font in config */
+}
+
+.chart-container {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    height: 280px;
+    max-height: 350px;
+}
+
+.nav-link {
+    transition: all 0.2s ease-in-out;
+}
+
+.nav-link.active {
+    background-color: var(--accent-gold); /* Using CSS variable for active state */
+    color: var(--primary-bg);
+    font-weight: 600;
+}
+
+.nav-link:not(.active):hover {
+    background-color: rgba(255, 215, 0, 0.2); /* Using rgba for hover opacity */
+    color: var(--accent-gold);
+}
+
+.content-section {
+    display: none;
+}
+
+.content-section.active {
+    display: block;
+}
+
+.gradient-text {
+    background: linear-gradient(45deg, var(--accent-gold), rgba(255, 215, 0, 0.7));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.card {
+    background-color: var(--secondary-white);
+    color: var(--text-dark-gray); /* Ensure dark text on light card background */
+    border-radius: 0.75rem; /* rounded-xl */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
+    border: 1px solid rgba(0, 0, 0, 0.05); /* subtle border */
+}
+
+.input-field {
+    background-color: var(--secondary-white);
+    border: 1px solid var(--text-light-gray); /* Use a slightly darker light gray for border */
+    color: var(--text-dark-gray); /* Ensure input text is dark */
+}
+
+.input-field:focus {
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.5);
+}
+
+.button-primary {
+    background-color: var(--accent-gold);
+    color: var(--primary-bg);
+    font-weight: 700;
+    border-radius: 0.5rem; /* rounded-lg */
+    transition: background-color 0.2s ease-in-out;
+}
+
+.button-primary:hover {
+    background-color: rgba(255, 215, 0, 0.8);
+}
+
+.bg-gold-light {
+    background-color: rgba(255, 215, 0, 0.1);
+}
+
+.text-gold {
+    color: var(--accent-gold);
+}
+
+.text-white-contrast {
+    color: var(--secondary-white);
+}
+
+.text-dark-contrast {
+    color: var(--primary-bg);
+}
+
+.border-subtle {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Custom styles for the new Cashflow Timeline */
+.cashflow-step {
+    flex-grow: 1;
+    flex-basis: 0;
+    min-width: 180px; /* Ensure enough width for content */
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    background-color: var(--bg-light-gray); /* Light background for steps */
+    color: var(--text-dark-gray); /* Ensure text is dark on light background */
+    position: relative;
+    z-index: 1; /* Above the line */
+}
+.cashflow-step .icon-circle {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0 auto 0.5rem auto;
+    border: 3px solid var(--accent-gold); /* Gold border for emphasis */
+    background-color: var(--secondary-white); /* White background for number circle */
+    color: var(--primary-bg); /* Dark number */
+}
+.money-flow-info {
+    font-size: 0.75rem; /* text-xs */
+    font-weight: 600; /* semibold */
+    margin-top: 0.5rem;
+    color: var(--primary-bg); /* Changed to primary-bg for better contrast on gold-light */
+}
+
+/* Responsive adjustments for cashflow timeline */
+@media (max-width: 767px) {
+    .cashflow-step {
+        width: 100%;
+        margin-bottom: 2rem;
+    }
+    .cashflow-step:last-child {
+        margin-bottom: 0;
+    }
+    .cashflow-step::after { /* Vertical connector line for mobile */
+        content: '';
+        position: absolute;
+        bottom: -2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 2px;
+        height: 2rem;
+        background-color: var(--text-light-gray);
+        z-index: -1;
+    }
+    .cashflow-step:last-child::after {
+        display: none;
+    }
+}

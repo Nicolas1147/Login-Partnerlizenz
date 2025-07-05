@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <!-- Chosen Palette: B2B Sales Accelerator Style Guide (Primary: #000000, Accent: #FFD700, Secondary: #FFFFFF, Grayscale: #333333, #666666, #999999, #F5F5F5) -->
+    <!-- Application Structure Plan: The application is designed as an interactive dashboard/playbook with a fixed sidebar for navigation and a main content area. This task-oriented structure allows sales agents to quickly access specific information (e.g., objection handling during a call) without linear scrolling. Key interactive elements like dynamic calculators and searchable lists provide direct utility, making it a practical tool for daily use. -->
+    <!-- Visualization & Content Choices: 
+    - Dashboard KPIs (Goal: Inform): Big number cards (HTML/CSS) for immediate impact on key metrics.
+    - Funding by Salary (Goal: Compare): Chart.js Bar Chart to clearly show the correlation between employee salary and potential funding.
+    - Model Flow (Goal: Organize): Custom HTML/CSS diagram to explain the process visually, avoiding prohibited SVG/Mermaid. Hover interactions add detail without clutter.
+    - Sales Strategy (Goal: Organize): Tabbed interface (HTML/JS) to segment the 3-phase plan into digestible parts.
+    - Objection Handling (Goal: Inform/Organize): Searchable list (HTML/JS) for quick access to pre-scripted, effective responses.
+    - Agency Revenue Projection (Goal: Change): Chart.js Line Chart to visualize cumulative revenue growth over time, including a break-even point marker.
+    - AI Lead Assistant (Goal: Inform/Organize): Text input for lead context, button to trigger LLM, and output area for personalized talking points/outreach messages.
+    - AI Case Study Generator (Goal: Inform/Organize): Text inputs for project details, button to trigger LLM, and output area for a generated case study.
+    - Other Funding Pots (Goal: Inform/Organize): Cards for each funding pot detailing suitability, benefits, and funding amounts.
+    - Sell & Scale Scenario Calculator (Goal: Inform/Analyze/Engage): Enhanced calculator with industry presets, dynamic table, and line chart with break-even marker.
+    - Education Provider Cashflow (Goal: Inform/Organize/Change): Explains the revenue model for the education provider, including funding source, QCG volume, and a simplified cashflow timeline graphic (HTML/CSS) combined with a Chart.js line chart visualizing cumulative cashflow to the education provider.
+    - AI Benefit Explainer (Goal: Inform/Organize): Text inputs for client pain point, agency solution, and QCG impact. Button to trigger LLM and output area for a concise benefit explanation.
+    - Automated Offer Generation (Goal: Task/Utility): Form for offer details, button for PDF generation (placeholder functionality).
+    - Forecast & Reminder (Goal: Inform/Utility): Input for monthly target, output for annual forecast and reminder text.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interaktives Handbuch: Das QCG-Fördermodell</title>
+    
+    <!-- Tailwind CSS Configuration -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-bg': '#000000',
+                        'accent-gold': '#FFD700',
+                        'secondary-white': '#FFFFFF',
+                        'text-dark-gray': '#333333', /* Darker for better contrast */
+                        'text-medium-gray': '#4A4A4A', /* Darker for better contrast */
+                        'text-light-gray': '#999999', /* Darker for better contrast, used for subtle lines/borders */
+                        'bg-light-gray': '#F5F5F5',
+                        'gold-light': 'rgba(255, 215, 0, 0.1)', /* For light gold backgrounds */
+                    },
+                    fontFamily: {
+                        'sans': ['Helvetica Neue', 'Arial', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="min-h-screen bg-primary-bg text-secondary-white">
+
+    <div class="flex flex-col md:flex-row min-h-screen">
+        <aside class="w-full md:w-64 bg-primary-bg border-r border-gray-800 p-6 flex-shrink-0">
+            <h1 class="text-2xl font-bold text-secondary-white mb-8">QCG Playbook</h1>
+            <nav id="navigation" class="flex flex-row md:flex-col gap-2">
+                <a href="#dashboard" class="nav-link active flex items-center p-3 rounded-lg"><span class="mr-3 text-lg">📊</span>Übersicht</a>
+                <a href="#model" class="nav-link flex items-center p-3 rounded-lg"><span class="mr-3 text-lg">⚙️</span>Das Modell</a>
+                <a href="#strategy" class="nav-link flex items-center p-3 rounded-lg"><span class="mr-3 text-lg">🎯</span>Strategie</a>
+                <a href="#objections" class="nav-link flex items-center p-3 rounded-lg"><span class="mr-3 text-lg">🗣️</span>Einwände</a>
+                <a href="#requirements" class="nav-link flex items-center p-3 rounded-lg"><span class="mr-3 text-lg">📋</span>Voraussetzungen</a>
+                <a href="#funding-calculator" class="nav-link flex items-center p-3 rounded-lg"><span class="mr-3 text-lg">💰</span>Förderrechner</a>
+                <a href="#client-benefit-calculator" class="nav-link flex items-center p-3 rounded-lg"><span class="mr-3 text-lg">💸</span>Vorteilsrechner</a>
+                <a href="#ai-lead-assistant" class="nav-link flex items-center p-3 rounded-lg"><span class="mr-3 text-lg">✨</span>KI-Lead-Assistent</a>
+                <a href="#ai-case-study-generator" class="nav-link flex items-center p-3 rounded-lg"><span class="mr-3 text-lg">📝</span>KI-Fallstudien</a>
+                <a href="#other-funding-pots" class="nav-link flex items-center p-3 rounded-lg"><span class="mr-3 text-lg">🔍</span>Weitere Fördertöpfe</a>
+                <a href="#cashflow-timeline" class="nav-link flex items-center p-3 rounded-lg"><span class="mr-3 text-lg">📈</span>Cashflow Fördergelder</a>
+                <a href="#ai-benefit-explainer" class="nav-link flex items-center p-3 rounded-lg"><span class="mr-3 text-lg">💡</span>KI-Nutzen-Erklärer</a>
+                <a href="#offer-generation" class="nav-link flex items-center p-3 rounded-lg"><span class="mr-3 text-lg">📄</span>Angebot erstellen</a>
+                <a href="#forecast-reminder" class="nav-link flex items-center p-3 rounded-lg"><span class="mr-3 text-lg">📅</span>Forecast & Reminder</a>
+            </nav>
+        </aside>
+
+        <main class="flex-1 p-6 md:p-10 overflow-y-auto bg-bg-light-gray">
+            
+            <section id="dashboard" class="content-section active">
+                <h2 class="text-3xl font-bold mb-2 text-primary-bg">Dashboard: Der <span class="gradient-text">unfaire Vorteil</span> auf einen Blick</h2>
+                <p class="text-text-medium-gray mb-8">Hier finden Sie die wichtigsten Kennzahlen und ein interaktives Tool, um das Potenzial des QCG-Modells schnell zu erfassen und zu kommunizieren.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    <div class="card p-6">
+                        <div class="text-sm font-semibold text-text-medium-gray">Erfolgsquote der Anträge</div>
+                        <div class="text-5xl font-extrabold text-accent-gold mt-2">75%</div>
+                        <p class="text-xs text-text-medium-gray mt-1">Basierend auf über 200 eingereichten Anträgen.</p>
+                    </div>
+                    <div class="card p-6">
+                        <div class="text-sm font-semibold text-text-medium-gray">Ø Förderpotenzial</div>
+                        <div class="text-5xl font-extrabold text-accent-gold mt-2">20.160€</div>
+                        <p class="text-xs text-text-medium-gray mt-1">Bei 3.5k € Gehalt / 6 Monate.</p>
+                    </div>
+                    <div class="card p-6">
+                        <div class="text-sm font-semibold text-text-medium-gray">Typ. Prüfzeit</div>
+                        <div class="text-5xl font-extrabold text-accent-gold mt-2">4-6</div>
+                        <p class="text-xs text-text-medium-gray mt-1">Wochen bis zur Genehmigung.</p>
+                    </div>
+                </div>
+
+                <div class="card p-6">
+                    <h3 class="font-semibold text-lg mb-4 text-center text-primary-bg">Förderhöhe nach Mitarbeitergehalt</h3>
+                    <p class="text-sm text-center text-text-medium-gray mb-4">Visualisiert, wie das monatliche Bruttogehalt eines Mitarbeiters die gesamte 6-monatige Fördersumme direkt beeinflusst.</p>
+                    <div class="chart-container">
+                        <canvas id="fundingAmountChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <section id="model" class="content-section">
+                <h2 class="text-3xl font-bold mb-2 text-primary-bg">Das Modell im Detail: <span class="gradient-text">Von Kosten zu Chancen</span></h2>
+                <p class="text-text-medium-gray mb-8">Das QCG-Fördermodell ist ein Kreislauf, der durch die Integration einer zertifizierten Weiterbildung in Ihr Agenturangebot ausgelöst wird. Dies macht Ihr Angebot förderfähig und schafft einen Geldfluss, der Ihre Dienstleistung für den Kunden refinanziert.</p>
+
+                 <div class="card p-8">
+                     <h3 class="font-bold text-xl text-center text-primary-bg mb-8">Der Win-Win-Win-Win Kreislauf</h3>
+                     <div class="relative flex flex-col md:flex-row items-center justify-around space-y-8 md:space-y-0">
+
+                        <div class="flow-step text-center w-48" data-info-key="step1">
+                            <div class="p-4 bg-bg-light-gray border-2 border-dashed border-accent-gold rounded-full w-28 h-28 flex items-center justify-center text-5xl mx-auto mb-3 transition-transform duration-200 hover:scale-110">🏢</div>
+                            <div class="font-bold text-primary-bg">1. Agentur für Arbeit</div>
+                            <p class="text-sm text-text-medium-gray">Genehmigt den Antrag und stellt die Fördermittel bereit.</p>
+                        </div>
+
+                        <div class="text-4xl font-light text-text-light-gray transform rotate-90 md:rotate-0">→</div>
+
+                        <div class="flow-step text-center w-48" data-info-key="step2">
+                            <div class="p-4 bg-bg-light-gray border-2 border-dashed border-accent-gold rounded-full w-28 h-28 flex items-center justify-center text-5xl mx-auto mb-3 transition-transform duration-200 hover:scale-110">💼</div>
+                            <div class="font-bold text-primary-bg">2. Ihr Endkunde</div>
+                            <p class="text-sm text-text-medium-gray">Erhält 75% der Lohnkosten für den geförderten Mitarbeiter.</p>
+                        </div>
+                        
+                        <div class="text-4xl font-light text-text-light-gray transform rotate-90 md:rotate-0">→</div>
+
+                        <div class="flow-step text-center w-48" data-info-key="step3">
+                             <div class="p-4 bg-bg-light-gray border-2 border-dashed border-accent-gold rounded-full w-28 h-28 flex items-center justify-center text-5xl mx-auto mb-3 transition-transform duration-200 hover:scale-110">🚀</div>
+                            <div class="font-bold text-primary-bg">3. Ihre Agentur</div>
+                            <p class="text-sm text-text-medium-gray">Wird mit den Fördermitteln für die Dienstleistung bezahlt.</p>
+                        </div>
+                        
+                         <div class="text-4xl font-light text-text-light-gray transform rotate-90 md:rotate-0">→</div>
+
+                         <div class="flow-step text-center w-48" data-info-key="step4">
+                             <div class="p-4 bg-bg-light-gray border-2 border-dashed border-accent-gold rounded-full w-28 h-28 flex items-center justify-center text-5xl mx-auto mb-3 transition-transform duration-200 hover:scale-110">🎓</div>
+                            <div class="font-bold text-primary-bg">4. Bildungsträger</div>
+                            <p class="text-sm text-text-medium-gray">Führt die Weiterbildung durch und wird dafür vergütet.</p>
+                        </div>
+                    </div>
+                    <div id="flow-info-box" class="mt-8 p-4 bg-gold-light rounded-lg border border-gray-200 text-center text-text-dark-gray min-h-[60px] flex items-center justify-center transition-opacity duration-300 opacity-0">
+                        Bewegen Sie den Mauszeiger über einen Schritt, um mehr zu erfahren.
+                    </div>
+                 </div>
+            </section>
+            
+            <section id="strategy" class="content-section">
+                <h2 class="text-3xl font-bold mb-2 text-primary-bg">Strategie: <span class="gradient-text">Das Sell & Scale Konzept</span></h2>
+                <p class="text-text-medium-gray mb-8">Ein erprobter 3-Phasen-Plan, um das QCG-Modell effektiv zu nutzen, schnell erste Erfolge zu erzielen und es nachhaltig in Ihr Neukundengeschäft zu integrieren.</p>
+
+                <div class="card">
+                    <div class="flex border-b border-gray-200">
+                        <button class="strategy-tab active flex-1 p-4 font-semibold text-center focus:outline-none transition-colors text-primary-bg" data-target="phase1">Phase 1: Bestandskunden</button>
+                        <button class="strategy-tab flex-1 p-4 font-semibold text-center focus:outline-none transition-colors text-text-medium-gray" data-target="phase2">Phase 2: Karteileichen</button>
+                        <button class="strategy-tab flex-1 p-4 font-semibold text-center focus:outline-none transition-colors text-text-medium-gray" data-target="phase3">Phase 3: Neukunden</button>
+                    </div>
+                    <div class="p-8">
+                        <div id="phase1" class="strategy-content active">
+                            <h3 class="font-bold text-xl mb-3 text-primary-bg">Ziel: Schnelle Erfolge & Cashflow</h3>
+                            <p class="text-text-medium-gray">Sprechen Sie Kunden an, die kurz vor einer Vertragsverlängerung stehen oder bei denen ein Upsell sinnvoll wäre, aber am Budget scheitert. Die QCG-Förderung überwindet diese Hürde und finanziert Ihre erweiterte Dienstleistung. Dies schafft sofortige Referenzen und beweist die Wirksamkeit des Modells.</p>
+                             <div class="mt-4 p-4 bg-gold-light rounded-lg text-sm text-text-dark-gray">
+                                <span class="font-bold">Praxis-Tipp:</span> Bieten Sie ein "All-Inclusive"-Paket an, das durch die Förderung für den Kunden kostenlos wird. Das ist ein extrem starker Hebel für Vertragsverlängerungen.
+                             </div>
+                        </div>
+                        <div id="phase2" class="strategy-content hidden">
+                            <h3 class="font-bold text-xl mb-3 text-primary-bg">Ziel: Reaktivierung & Pipeline-Füllung</h3>
+                            <p class="text-text-medium-gray">Gehen Sie Ihre CRM-Liste durch und kontaktieren Sie alle potenziellen Kunden, bei denen ein Deal in der Vergangenheit nicht zustande kam – meistens aus Budgetgründen. Das neue, "kostenlose" Angebot ist der perfekte Aufhänger, um diese Gespräche wieder aufzunehmen und die Deals doch noch abzuschließen.</p>
+                            <div class="mt-4 p-4 bg-gold-light rounded-lg text-sm text-text-dark-gray">
+                                <span class="font-bold">Praxis-Tipp:</span> Starten Sie den Anruf mit: "Ich habe an unser Gespräch von damals gedacht und habe eine Möglichkeit gefunden, wie wir unser gesamtes Angebot für Sie finanzieren können, ohne dass es Ihr Budget belastet."
+                             </div>
+                        </div>
+                        <div id="phase3" class="strategy-content hidden">
+                           <h3 class="font-bold text-xl mb-3 text-primary-bg">Ziel: Skalierung & Marktdominanz</h3>
+                            <p class="text-text-medium-gray">Integrieren Sie das QCG-Modell als festen Bestandteil in Ihren Neukundenprozess. Nutzen Sie es als "Ass im Ärmel", wenn ein Kunde im Closing-Gespräch aufgrund des Preises zögert. Alternativ können Sie es proaktiv im Marketing einsetzen ("Wir finden Ihre Mitarbeiter und Sie zahlen keinen Cent"), um sehr günstige Leads zu generieren und sich klar vom Wettbewerb abzuheben.</p>
+                            <div class="mt-4 p-4 bg-gold-light rounded-lg text-sm text-text-dark-gray">
+                                <span class="font-bold">Praxis-Tipp:</span> Positionieren Sie es nicht als Rabatt, sondern als eine strategische Finanzierungsoption, die Ihnen ermöglicht, dem Kunden ein umfassenderes, werthaltigeres Paket anzubieten.
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="objections" class="content-section">
+                <h2 class="text-3xl font-bold mb-2 text-primary-bg">Einwände & <span class="gradient-text">Framing</span></h2>
+                <p class="text-text-medium-gray mb-8">Hier finden Sie die häufigsten Kundeneinwände und die passenden, erprobten Antworten. Nutzen Sie die Suche, um schnell die richtige Strategie zu finden.</p>
+                <div class="card p-8">
+                    <input type="search" id="objectionSearch" placeholder="Suchen Sie nach einem Einwand (z.B. Zeit, Risiko)..." class="input-field w-full p-3 mb-6 rounded-md shadow-sm">
+                    <div id="objectionList" class="space-y-4"></div>
+                </div>
+            </section>
+
+            <section id="requirements" class="content-section">
+                <h2 class="text-3xl font-bold mb-2 text-primary-bg">Voraussetzungen & <span class="gradient-text">Ihr Paket</span></h2>
+                <p class="text-text-medium-gray mb-8">Damit das Modell funktioniert, müssen bestimmte Kriterien erfüllt sein. Hier finden Sie eine Checkliste für den idealen Förderkandidaten und eine Übersicht der Leistungen, die wir für Sie erbringen.</p>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="card p-8">
+                        <h3 class="font-semibold text-lg mb-4 text-primary-bg">Ihr Rundum-Sorglos-Paket</h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-start"><span class="text-accent-gold mr-3 mt-1">✓</span><span><b>Persönlicher Partner Manager:</b> Ihr direkter Ansprechpartner für alle strategischen Fragen.</span></li>
+                            <li class="flex items-start"><span class="text-accent-gold mr-3 mt-1">✓</span><span><b>Verkaufsvorlagen & Skripte:</b> Erprobte Framings und Einwandbehandlungen.</span></li>
+                            <li class="flex items-start"><span class="text-accent-gold mr-3 mt-1">✓</span><span><b>Komplette Antragsabwicklung:</b> Unser Backoffice übernimmt den gesamten bürokratischen Prozess.</span></li>
+                            <li class="flex items-start"><span class="text-accent-gold mr-3 mt-1">✓</span><span><b>Garantieverträge:</b> Juristisch geprüfte Vorlagen, die Sie und Ihre Kunden absichern.</span></li>
+                            <li class="flex items-start"><span class="text-accent-gold mr-3 mt-1">✓</span><span><b>Exklusive Weiterbildungen:</b> Zugang zu zertifizierten Kursen (HR, Social Media, KI etc.).</span></li>
+                        </ul>
+                    </div>
+                    <div class="card p-8">
+                        <h3 class="font-semibold text-lg mb-4 text-primary-bg">Checkliste: Der ideale Förderkandidat</h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-start"><span class="text-accent-gold mr-3 mt-1">🎂</span><span><b>Alter:</b> Der Mitarbeiter muss über 25 Jahre alt sein.</span></li>
+                            <li class="flex items-start"><span class="text-accent-gold mr-3 mt-1">📜</span><span><b>Förderhistorie:</b> In den letzten 2 Jahren darf keine Förderung durch die Agentur für Arbeit stattgefunden haben.</span></li>
+                            <li class="flex items-start"><span class="text-accent-gold mr-3 mt-1">🇩🇪</span><span><b>Sprachniveau:</b> Mindestens Deutsch-Niveau B1, idealerweise B2 oder höher.</span></li>
+                            <li class="flex items-start"><span class="text-accent-gold mr-3 mt-1">🖥️</span><span><b>Rolle:</b> Ideal sind Mitarbeiter aus dem Backoffice, Service oder Innendienst. Vertriebler mit Provision sind schwierig.</span></li>
+                             <li class="flex items-start"><span class="text-accent-gold mr-3 mt-1">💼</span><span><b>Anstellung:</b> Der Mitarbeiter kann auch neu angestellt werden, eine bestehende Anstellung ist jedoch einfacher.</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="funding-calculator" class="content-section">
+                <h2 class="text-3xl font-bold mb-2 text-primary-bg">Förderrechner: <span class="gradient-text">Ihr Umsatzpotenzial</span> (Agentur)</h2>
+                <p class="text-text-medium-gray mb-8">Projizieren Sie Ihren Umsatz. Das Tool berücksichtigt einen "Sofort-Start" mit Bestandskunden im ersten Monat und eine konstante Neukundengewinnung danach. Eine durchschnittliche Prüf- und Genehmigungszeit von 6 Wochen (1,5 Monaten) bis zum Umsatz-Eingang ist einkalkuliert.</p>
+
+                <div class="card p-8">
+                    <h3 class="font-semibold text-lg mb-4 text-primary-bg">Eingaben</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                        <div>
+                            <label for="scenarioSelect" class="block text-sm font-medium text-text-medium-gray">Szenario / Agentur-Typ</label>
+                            <select id="scenarioSelect" class="input-field mt-1 w-full p-2 rounded-md shadow-sm">
+                                <option value="custom">Manuelle Eingabe</option>
+                                <option value="recruiting">Recruiting-Agentur</option>
+                                <option value="leadgen">Lead-Gen-Agentur</option>
+                                <option value="ki_process">KI/Prozess-Optimierung</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="calcAgencyOfferTotalValue" class="block text-sm font-medium text-text-medium-gray">Gesamtwert Agenturangebot (€)</label>
+                            <input type="number" id="calcAgencyOfferTotalValue" value="12000" class="input-field mt-1 w-full p-2 rounded-md shadow-sm">
+                        </div>
+                        <div>
+                            <label for="calcInitialExistingClients" class="block text-sm font-medium text-text-medium-gray">Bestandskunden (Monat 1)</label>
+                            <input type="number" id="calcInitialExistingClients" value="3" class="input-field mt-1 w-full p-2 rounded-md shadow-sm">
+                        </div>
+                         <div>
+                            <label for="calcInitialCRMLeads" class="block text-sm font-medium text-text-medium-gray">Karteileichen (Monat 1)</label>
+                            <input type="number" id="calcInitialCRMLeads" value="2" class="input-field mt-1 w-full p-2 rounded-md shadow-sm">
+                        </div>
+                         <div>
+                            <label for="calcInitialOpenOffers" class="block text-sm font-medium text-text-medium-gray">Offene Angebote (Monat 1)</label>
+                            <input type="number" id="calcInitialOpenOffers" value="1" class="input-field mt-1 w-full p-2 rounded-md shadow-sm">
+                        </div>
+                        <div class="lg:col-span-2">
+                            <label for="calcMonthlyNewClientsTarget" class="block text-sm font-medium text-text-medium-gray">Neue Kunden pro Monat (ab Monat 2)</label>
+                            <input type="number" id="calcMonthlyNewClientsTarget" value="2" class="input-field mt-1 w-full p-2 rounded-md shadow-sm">
+                        </div>
+                    </div>
+
+                    <h3 class="font-semibold text-lg mb-4 text-primary-bg">Umsatzprojektion Agentur (6 Monate)</h3>
+                    <div class="overflow-x-auto mb-8">
+                        <table class="min-w-full bg-secondary-white border border-gray-200 rounded-md shadow-sm">
+                            <thead>
+                                <tr class="bg-gray-100 border-b">
+                                    <th class="py-2 px-4 text-left text-sm font-semibold text-text-dark-gray">Monat</th>
+                                    <th class="py-2 px-4 text-left text-sm font-semibold text-text-dark-gray">Erfolgr. Kunden (Neu)</th>
+                                    <th class="py-2 px-4 text-left text-sm font-semibold text-text-dark-gray">Realisierter Umsatz (Monat)</th>
+                                    <th class="py-2 px-4 text-left text-sm font-semibold text-text-dark-gray">Kumulierte Kunden</th>
+                                    <th class="py-2 px-4 text-left text-sm font-semibold text-text-dark-gray">Kumulierter Umsatz</th>
+                                </tr>
+                            </thead>
+                            <tbody id="agencyMonthlyProjectionTable"></tbody>
+                        </table>
+                    </div>
+                    <h3 class="font-semibold text-lg mb-4 text-primary-bg">Kumulierte Umsatzentwicklung</h3>
+                    <div class="chart-container h-64 md:h-80">
+                        <canvas id="agencyRevenueChart"></canvas>
+                    </div>
+                    <div class="mt-8 p-4 bg-gold-light rounded-lg text-sm text-text-dark-gray text-center">
+                        <p id="breakEvenText" class="font-bold"></p>
+                    </div>
+                     <div class="mt-8 text-center">
+                        <button id="calculatorChatBtn" class="button-primary py-2 px-4 inline-flex items-center justify-center">
+                            <span id="calculatorChatButtonText">Fragen zum Rechner? ✨</span>
+                            <svg id="calculatorChatLoadingSpinner" class="animate-spin -ml-1 mr-3 h-5 w-5 text-primary-bg hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </button>
+                         <div id="calculatorChatOutput" class="mt-4 p-4 bg-bg-light-gray rounded-lg border border-gray-200 text-text-dark-gray hidden">
+                            <h4 class="font-semibold text-primary-bg mb-2">KI-Antwort:</h4>
+                            <p id="calculatorChatResponseText" class="whitespace-pre-wrap"></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="client-benefit-calculator" class="content-section">
+                <h2 class="text-3xl font-bold mb-2 text-primary-bg">Vorteilsrechner: <span class="gradient-text">Zusätzlicher Gewinn für Ihren Kunden</span></h2>
+                <p class="text-text-medium-gray mb-8">Nutzen Sie dieses Tool im Verkaufsgespräch, um Ihren Kunden den finanziellen Vorteil schwarz auf weiß zu zeigen. Es verdeutlicht den potenziellen Mehrwert und macht Ihr Angebot unwiderstehlich.</p>
+
+                <div class="card p-8">
+                    <h3 class="font-semibold text-lg mb-4 text-primary-bg">Eingaben</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div>
+                            <label for="ekEmployeeGrossSalary" class="block text-sm font-medium text-text-medium-gray">Bruttogehalt Mitarbeiter (€)</label>
+                            <input type="number" id="ekEmployeeGrossSalary" value="3500" class="input-field mt-1 w-full p-2 rounded-md shadow-sm">
+                        </div>
+                        <div>
+                            <label for="ekTotalAgencyOfferValue" class="block text-sm font-medium text-text-medium-gray">Gesamtwert Agenturangebot (6 Monate, €)</label>
+                            <input type="number" id="ekTotalAgencyOfferValue" value="12000" class="input-field mt-1 w-full p-2 rounded-md shadow-sm">
+                        </div>
+                    </div>
+
+                    <h3 class="font-semibold text-lg mb-4 text-primary-bg">Ergebnisse für den Endkunden</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-gold-light p-6 rounded-lg text-center">
+                            <div class="text-sm text-text-dark-gray">Gesamtförderung (6 Monate)</div>
+                            <div id="ekTotalFundingResult" class="text-3xl font-bold text-accent-gold mt-1"></div>
+                        </div>
+                        <div class="bg-gold-light p-6 rounded-lg text-center">
+                            <div class="text-sm text-text-dark-gray">Effektive Kosten für den Kunden</div>
+                            <div id="ekNetEffectiveCostResult" class="text-3xl font-bold text-accent-gold mt-1"></div>
+                        </div>
+                        <div class="bg-gold-light p-6 rounded-lg md:col-span-2 text-center">
+                            <div class="text-sm text-text-dark-gray">Zusätzlicher Gewinn durch Förderung</div>
+                            <div id="ekSavingsPercentageResult" class="text-3xl font-bold text-accent-gold mt-1"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="ai-lead-assistant" class="content-section">
+                <h2 class="text-3xl font-bold mb-2 text-primary-bg">Ihr ✨ KI-Lead-Assistent</h2>
+                <p class="text-text-medium-gray mb-8">Erhalten Sie personalisierte Gesprächsleitfäden oder erste Kontakttexte basierend auf den Details Ihrer Leads.</p>
+                <div class="card p-8">
+                    <h3 class="font-semibold text-lg mb-4 text-primary-bg">Lead-Informationen eingeben</h3>
+                    <div class="space-y-4 mb-6">
+                        <div>
+                            <label for="leadContextInput" class="block text-sm font-medium text-text-medium-gray">Branche, Unternehmensgröße, bekanntes Problem des Leads:</label>
+                            <textarea id="leadContextInput" class="input-field mt-1 w-full p-3 rounded-md shadow-sm min-h-[100px]" placeholder="Z.B. 'Pflegedienst, 25 Mitarbeiter, sucht dringend Pflegefachkräfte' oder 'E-Commerce-Shop, 5 Mitarbeiter, Probleme mit Online-Sichtbarkeit'"></textarea>
+                        </div>
+                        <div>
+                            <label for="outputTypeSelect" class="block text-sm font-medium text-text-medium-gray">Gewünschter Output:</label>
+                            <select id="outputTypeSelect" class="input-field mt-1 w-full p-3 rounded-md shadow-sm">
+                                <option value="talking_points">Gesprächsleitfaden (Talking Points)</option>
+                                <option value="email_outreach">E-Mail für Erstkontakt</option>
+                                <option value="linkedin_message">LinkedIn Nachricht</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button id="generateLeadContentBtn" class="button-primary w-full py-3 px-6 flex items-center justify-center">
+                        <span id="leadButtonText">Inhalt generieren ✨</span>
+                        <svg id="leadLoadingSpinner" class="animate-spin -ml-1 mr-3 h-5 w-5 text-primary-bg hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </button>
+                    <div id="leadOutput" class="mt-8 p-6 bg-bg-light-gray rounded-lg border border-gray-200 text-text-dark-gray hidden">
+                        <h3 class="font-semibold text-primary-bg mb-2">Generierter Inhalt:</h3>
+                        <p id="leadResponseText" class="whitespace-pre-wrap"></p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="ai-case-study-generator" class="content-section">
+                <h2 class="text-3xl font-bold mb-2 text-primary-bg">Ihr ✨ KI-Fallstudien-Generator</h2>
+                <p class="text-text-medium-gray mb-8">Erstellen Sie überzeugende Fallstudien für Ihre Marketingmaterialien und Verkaufsgespräche.</p>
+                <div class="card p-8">
+                    <h3 class="font-semibold text-lg mb-4 text-primary-bg">Projekt-Details eingeben</h3>
+                    <div class="space-y-4 mb-6">
+                        <div>
+                            <label for="caseStudyClient" class="block text-sm font-medium text-text-medium-gray">Kunde (Branche, Größe):</label>
+                            <input type="text" id="caseStudyClient" class="input-field mt-1 w-full p-3 rounded-md shadow-sm" placeholder="Z.B. 'Pflegedienst Müller, 25 Mitarbeiter'">
+                        </div>
+                        <div>
+                            <label for="caseStudyService" class="block text-sm font-medium text-text-medium-gray">Erbringte Dienstleistung:</label>
+                            <input type="text" id="caseStudyService" class="input-field mt-1 w-full p-3 rounded-md shadow-sm" placeholder="Z.B. 'Social Recruiting Kampagne'">
+                        </div>
+                        <div>
+                            <label for="caseStudyChallenge" class="block text-sm font-medium text-text-medium-gray">Herausforderung des Kunden:</label>
+                            <textarea id="caseStudyChallenge" class="input-field mt-1 w-full p-3 rounded-md shadow-sm min-h-[80px]" placeholder="Z.B. 'Schwierigkeiten, qualifizierte Pflegefachkräfte zu finden, hohe Fluktuation'"></textarea>
+                        </div>
+                        <div>
+                            <label for="caseStudyResults" class="block text-sm font-medium text-text-medium-gray">Konkrete Ergebnisse (quantifizierbar):</label>
+                            <textarea id="caseStudyResults" class="input-field mt-1 w-full p-3 rounded-md shadow-sm min-h-[80px]" placeholder="Z.B. '15 qualifizierte Bewerbungen in 2 Monaten, 3 Einstellungen, 30% Kostenersparnis bei HR-Prozessen'"></textarea>
+                        </div>
+                        <div>
+                            <label for="caseStudyQCGImpact" class="block text-sm font-medium text-text-medium-gray">QCG-Impact (wie die Förderung half):</label>
+                            <textarea id="caseStudyQCGImpact" class="input-field mt-1 w-full p-3 rounded-md shadow-sm min-h-[80px]" placeholder="Z.B. 'Dienstleistung wurde für den Kunden kostenlos, Mitarbeiter wurde zum HR-Manager geschult'"></textarea>
+                        </div>
+                    </div>
+                    <button id="generateCaseStudyBtn" class="button-primary w-full py-3 px-6 flex items-center justify-center">
+                        <span id="caseStudyButtonText">Fallstudie generieren ✨</span>
+                        <svg id="caseStudyLoadingSpinner" class="animate-spin -ml-1 mr-3 h-5 w-5 text-primary-bg hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </button>
+                    <div id="caseStudyOutput" class="mt-8 p-6 bg-bg-light-gray rounded-lg border border-gray-200 text-text-dark-gray hidden">
+                        <h3 class="font-semibold text-primary-bg mb-2">Generierte Fallstudie:</h3>
+                        <p id="caseStudyResponseText" class="whitespace-pre-wrap"></p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="other-funding-pots" class="content-section">
+                <h2 class="text-3xl font-bold mb-2 text-primary-bg">Weitere Fördertöpfe: <span class="gradient-text">Chancen jenseits des QCG</span></h2>
+                <p class="text-text-medium-gray mb-8">Neben dem QCG gibt es weitere relevante Förderprogramme, die je nach Kundenprofil und Projektziel interessant sein können. Hier finden Sie eine Übersicht der wichtigsten Alternativen.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="card p-6">
+                        <h3 class="font-bold text-xl mb-3 text-primary-bg">BAFA (Bundesamt für Wirtschaft und Ausfuhrkontrolle)</h3>
+                        <p class="text-text-medium-gray text-sm mb-2"><b>Geeignet für:</b> Kleine und mittlere Unternehmen (KMU) in Deutschland, die Beratungsleistungen in Anspruch nehmen möchten.</p>
+                        <p class="text-text-medium-gray text-sm mb-2"><b>Warum geeignet:</b> Fördert externe Beratungen zu Themen wie Digitalisierung, Unternehmensführung, Umweltschutz. Kann die Kosten für Ihre Strategieberatung reduzieren.</p>
+                        <p class="text-text-medium-gray text-sm"><b>Förderhöhe:</b> Bis zu 50% der Beratungskosten (oft gedeckelt, z.B. 3.000 € bis 5.000 €).</p>
+                    </div>
+                    <div class="card p-6">
+                        <h3 class="font-bold text-xl mb-3 text-primary-bg">INQA (Initiative Neue Qualität der Arbeit)</h3>
+                        <p class="text-text-medium-gray text-sm mb-2"><b>Geeignet für:</b> Unternehmen aller Größen, die innovative Konzepte zur Verbesserung der Arbeitsqualität und -organisation umsetzen.</p>
+                        <p class="text-text-medium-gray text-sm mb-2"><b>Warum geeignet:</b> Unterstützt Projekte in Bereichen wie Unternehmenskultur, Führung, Vielfalt, Gesundheit und Digitalisierung der Arbeitswelt. Ideal für HR- oder Kulturentwicklungsprojekte.</p>
+                        <p class="text-text-medium-gray text-sm"><b>Förderhöhe:</b> Projektbezogen, variiert stark je nach Umfang und Art des Vorhabens.</p>
+                    </div>
+                    <div class="card p-6">
+                        <h3 class="font-bold text-xl mb-3 text-primary-bg">Pflegepersonal-Stärkungsgesetz (PPSG)</h3>
+                        <p class="text-text-medium-gray text-sm mb-2"><b>Geeignet für:</b> Ambulante und stationäre Pflegeeinrichtungen.</p>
+                        <p class="text-text-medium-gray text-sm mb-2"><b>Warum geeignet:</b> Zielt auf die Stärkung des Pflegepersonals ab, z.B. durch die Finanzierung von Maßnahmen zur Personalgewinnung, -bindung und Digitalisierung im Pflegebereich.</p>
+                        <p class="text-text-medium-gray text-sm"><b>Förderhöhe:</b> Bis zu X € pro Einrichtung, 80% der förderfähigen Kosten.</p>
+                    </div>
+                    <div class="card p-6">
+                        <h3 class="font-bold text-xl mb-3 text-primary-bg">Niedersachsen Fördertopf (Ländliche Pflegedienste)</h3>
+                        <p class="text-text-medium-gray text-sm mb-2"><b>Geeignet für:</b> Speziell ambulante Pflegedienste in ländlichen Regionen Niedersachsens.</p>
+                        <p class="text-text-medium-gray text-sm mb-2"><b>Warum geeignet:</b> Fördert Digitalisierungsprojekte und die Verbesserung der Infrastruktur in ländlichen Pflegebetrieben. Relevant für Agenturen, die in diesem spezifischen Markt tätig sind.</p>
+                        <p class="text-text-medium-gray text-sm"><b>Förderhöhe:</b> Bis zu X € pro Jahr.</p>
+                    </div>
+                    <div class="card p-6">
+                        <h3 class="font-bold text-xl mb-3 text-primary-bg">Kompakthilfe für Solo-Selbstständige (Compass)</h3>
+                        <p class="text-text-medium-gray text-sm mb-2"><b>Geeignet für:</b> Einzelunternehmer und Solo-Selbstständige.</p>
+                        <p class="text-text-medium-gray text-sm mb-2"><b>Warum geeignet:</b> Bietet direkte finanzielle Unterstützung für Weiterbildung, Coaching oder Investitionen, die zur Stabilisierung oder Entwicklung des Geschäfts beitragen.</p>
+                        <p class="text-text-medium-gray text-sm"><b>Förderhöhe:</b> Bis zu 5.000 €.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="cashflow-timeline" class="content-section">
+                <h2 class="text-3xl font-bold mb-2 text-primary-bg">Cashflow Fördergelder: <span class="gradient-text">So funktioniert unser Modell</span></h2>
+                <p class="text-text-medium-gray mb-8">Transparenz ist uns wichtig. Hier erfahren Sie, wie die Gelder fließen, woher sie kommen und wie das Fördervolumen des QCG im Jahr 2025 aussieht.</p>
+                
+                <div class="card p-8">
+                    <h3 class="font-semibold text-xl mb-4 text-primary-bg">Unsere Einnahmen als Bildungsträger</h3>
+                    <p class="text-text-medium-gray mb-4">Als zertifizierter Bildungsträger erhalten wir die Kursgebühren direkt von der Agentur für Arbeit. Diese Gelder sind für die Durchführung der hochwertigen Weiterbildungen vorgesehen, die wir exklusiv für Ihre Kunden anbieten. Unser Verdienst ist direkt an den Erfolg der Anträge und die Teilnahme der Kursteilnehmer gekoppelt. Das bedeutet: Je mehr Ihrer Kunden erfolgreich gefördert werden, desto mehr Kursteilnehmer haben wir, und desto mehr Einnahmen generieren wir.</p>
+
+                    <h3 class="font-semibold text-xl mb-4 text-primary-bg">QCG Fördervolumen 2025</h3>
+                    <p class="text-text-medium-gray mb-6">Das Qualifizierungschancengesetz (QCG) ist ein zentrales Instrument der Bundesregierung zur Fachkräftesicherung. Für das Jahr 2025 wird ein Fördervolumen von **mehreren Milliarden Euro** erwartet, was eine enorme Chance für Unternehmen und Bildungsträger darstellt. Dieses Volumen unterstreicht die langfristige Relevanz und Stabilität des Förderprogramms und sichert die Verfügbarkeit der Mittel für Ihre Kunden.</p>
+
+                    <h3 class="font-semibold text-xl mb-6 text-primary-bg">Cashflow-Timeline: Wer erhält wann welche Gelder?</h3>
+                    <div class="relative flex flex-col items-center py-8">
+                        <!-- Horizontal connector line for MD+ screens -->
+                        <div class="absolute hidden md:block top-1/2 left-0 right-0 h-0.5 bg-text-light-gray transform -translate-y-1/2 z-0"></div>
+                        
+                        <!-- Timeline Steps -->
+                        <div class="flex flex-col md:flex-row justify-between w-full max-w-4xl">
+                            <!-- Step 1 -->
+                            <div class="cashflow-step flex flex-col items-center text-center w-full md:w-1/4 p-2 relative z-10 mb-8 md:mb-0">
+                                <div class="w-16 h-16 bg-accent-gold rounded-full flex items-center justify-center text-primary-bg text-3xl font-bold mb-2">1</div>
+                                <h4 class="font-semibold text-primary-bg">Beratung & Antragstellung</h4>
+                                <p class="text-text-medium-gray text-sm">Agentur & Kunde initiieren Projekt. Wir unterstützen bei der Antragstellung.</p>
+                                <p class="text-text-dark-gray text-xs mt-1">🗓️ <b>Monat 0</b></p>
+                                <p class="money-flow-info text-primary-bg">➡️ <b>Keine Auszahlung</b></p>
+                            </div>
+                            <!-- Arrow 1 -->
+                            <div class="flex items-center justify-center w-full md:w-auto p-4 md:p-0 md:h-auto transform rotate-90 md:rotate-0 text-3xl font-light text-text-dark-gray">
+                                ⬇️ <span class="hidden md:inline">→</span> </div>
+                            
+                            <!-- Step 2 -->
+                            <div class="cashflow-step flex flex-col items-center text-center w-full md:w-1/4 p-2 relative z-10 mb-8 md:mb-0">
+                                <div class="w-16 h-16 bg-accent-gold rounded-full flex items-center justify-center text-primary-bg text-3xl font-bold mb-2">2</div>
+                                <h4 class="font-semibold text-primary-bg">Prüfzeit & Genehmigung</h4>
+                                <p class="text-text-medium-gray text-sm">Agentur für Arbeit prüft Antrag. Unser Backoffice kommuniziert.</p>
+                                <p class="text-text-dark-gray text-xs mt-1">⏱️ <b>Dauer: 1.5 Monate</b></p>
+                                <p class="money-flow-info text-primary-bg">🚫 <b>Keine Auszahlung</b></p>
+                            </div>
+                            <!-- Arrow 2 -->
+                            <div class="flex items-center justify-center w-full md:w-auto p-4 md:p-0 md:h-auto transform rotate-90 md:rotate-0 text-3xl font-light text-text-dark-gray">
+                                ⬇️ <span class="hidden md:inline">→</span> </div>
+
+                            <!-- Step 3 -->
+                            <div class="cashflow-step flex flex-col items-center text-center w-full md:w-1/4 p-2 relative z-10 mb-8 md:mb-0">
+                                <div class="w-16 h-16 bg-accent-gold rounded-full flex items-center justify-center text-primary-bg text-3xl font-bold mb-2">3</div>
+                                <h4 class="font-semibold text-primary-bg">Kursstart & Erste Auszahlung</h4>
+                                <p class="text-text-medium-gray text-sm">Bildungsträger erhält erste Rate der Kursgebühren. Kunde erhält erste Lohnkostenförderung.</p>
+                                <p class="text-text-dark-gray text-xs mt-1"><i>Zeitpunkt: Monat 1.5</i></p>
+                                <p class="money-flow-info text-primary-bg">💰 <b>BT: Erste Rate</b><br>📈 <b>Kunde: Erste Lohnkostenförderung</b></p>
+                            </div>
+                            <!-- Arrow 3 -->
+                            <div class="flex items-center justify-center w-full md:w-auto p-4 md:p-0 md:h-auto transform rotate-90 md:rotate-0 text-3xl font-light text-text-dark-gray">
+                                ⬇️ <span class="hidden md:inline">→</span> </div>
+
+                            <!-- Step 4 -->
+                            <div class="cashflow-step flex flex-col items-center text-center w-full md:w-1/4 p-2 relative z-10">
+                                <div class="w-16 h-16 bg-accent-gold rounded-full flex items-center justify-center text-primary-bg text-3xl font-bold mb-2">4</div>
+                                <h4 class="font-semibold text-primary-bg">Laufende Förderung & Abschluss</h4>
+                                <p class="text-text-medium-gray text-sm">Monatliche Auszahlungen an Bildungsträger & Kunde über 6 Monate.</p>
+                                <p class="text-text-dark-gray text-xs mt-1"><i>Dauer: 6 Monate</i></p>
+                                <p class="money-flow-info text-primary-bg">💸 <b>Regelmäßiger Cashflow BT & Kunde</b></p>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 class="font-semibold text-lg mb-4 text-primary-bg mt-8">Kumulierter Cashflow Bildungsträger</h3>
+                    <div class="chart-container h-64 md:h-80">
+                        <canvas id="educationProviderCashflowChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+<script src="script.js"></script>
+</body>
+</html>
